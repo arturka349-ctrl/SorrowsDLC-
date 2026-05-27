@@ -140,4 +140,4 @@ public class SorrowsClient implements ClientModInitializer {
 
     public static boolean isZooming() { return zooming && zoomEnabled; }
     public static float getCurrentZoom() { return currentZoom; }
-            }
+                                       }
