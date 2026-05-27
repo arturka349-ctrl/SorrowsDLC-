@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import org.lwjgl.glfw.GLFW;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
 
 public class SorrowsClient implements ClientModInitializer {
 
@@ -31,17 +30,13 @@ public class SorrowsClient implements ClientModInitializer {
     public static int hitColorRGB = 0xFF3333;
     public static boolean damageTint = true;
     public static boolean dynamicIsland = true;
-    public static boolean guiAnimations = true;
 
     private static KeyBinding zoomKey;
     private static boolean zooming = false;
     private static float currentZoom = 1.0f;
     private static long hitTimestamp = 0;
     private static long damageTimestamp = 0;
-    private static float animProgress = 0f;
-    private static boolean increasing = true;
     private static final MinecraftClient mc = MinecraftClient.getInstance();
-    private static final Random random = new Random();
 
     @Override
     public void onInitializeClient() {
@@ -140,4 +135,4 @@ public class SorrowsClient implements ClientModInitializer {
 
     public static boolean isZooming() { return zooming && zoomEnabled; }
     public static float getCurrentZoom() { return currentZoom; }
-                                       }
+                }
