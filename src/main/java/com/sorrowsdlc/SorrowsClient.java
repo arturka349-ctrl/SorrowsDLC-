@@ -64,8 +64,80 @@ public class SorrowsClient implements ClientModInitializer {
         });
 
         HudRenderCallback.EVENT.register((context, tickDelta) -> {
-            renderHUD(context);
-            renderDamageTint(context);
-            renderDynamicIsland(context);
+            if (hudEnabled) renderHUD(context);
+            if (damageTint) renderDamageTint(context);
+            if (dynamicIsland) renderDynamicIsland(context);
         });
-              }
+    }
+
+    private void renderHUD(DrawContext context) {
+        if (mc.player == null || mc.world == null) return;
+        int y = 5;
+        int x = 5;
+
+        if (showCoords) {
+            BlockPos pos = mc.player.getBlockPos();
+            context.drawTextWithShadow(mc.textRenderer,
+                    "XYZ: " + pos.getX() + " " + pos.getY() + " " + pos.getZ(), x, y, 0xFFFFFF);
+            y += 12;
+        }
+        if (showFPS) {
+            context.drawTextWithShadow(mc.textRenderer,
+                    "FPS: " + mc.fpsDebugString.split(" ")[0], x, y, 0xFFFFFF);
+            y += 12;
+        }
+        if (showSpeed) {
+            double dx = mc.player.getX() - mc.player.prevX;
+            double dz = mc.player.getZ() - mc.player.prevZ;
+            double speed = Math.sqrt(dx * dx + dz * dz) * 20;
+            context.drawTextWithShadow(mc.textRenderer,
+                    String.format("Speed: %.1f m/s", speed), x, y, 0xFFFFFF);
+            y += 12;
+        }
+        if (showBiome) {
+            String biome = mc.world.getBiome(mc.player.getBlockPos())
+                    .getKey().map(k -> k.getValue().getPath()).orElse("?");
+            context.drawTextWithShadow(mc.textRenderer, "Biome: " + biome, x, y, 0xFFFFFF);
+            y += 12;
+        }
+        if (showTime) {
+            context.drawTextWithShadow(mc.textRenderer,
+                    "Time: " + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")), x, y, 0xFFFFFF);
+        }
+    }
+
+    private void renderDamageTint(DrawContext context) {
+        long elapsed = System.currentTimeMillis() - damageTimestamp;
+        if (elapsed < 300) {
+            float alpha = 0.3f * (1f - (float)elapsed / 300f);
+            int a = (int)(alpha * 255);
+            int w = mc.getWindow().getScaledWidth();
+            int h = mc.getWindow().getScaledHeight();
+            context.fill(0, 0, w, h, (a << 24) | 0xFF0000);
+        }
+    }
+
+    private void renderDynamicIsland(DrawContext context) {
+        int w = mc.getWindow().getScaledWidth();
+        int islandW = 120;
+        int islandH = 30;
+        int x = w / 2 - islandW / 2;
+        int y = 8;
+
+        context.fill(x, y, x + islandW, y + islandH, 0xCC000000);
+        context.drawBorder(x, y, islandW, islandH, 0xFFFFFFFF);
+        context.drawCenteredTextWithShadow(mc.textRenderer,
+                "sorrowsDLC", x + islandW / 2, y + 11, 0xFFFFFF);
+    }
+
+    public static void onDamage() {
+        if (damageTint) damageTimestamp = System.currentTimeMillis();
+    }
+
+    public static void onHit() {
+        if (hitColor) hitTimestamp = System.currentTimeMillis();
+    }
+
+    public static boolean isZooming() { return zooming && zoomEnabled; }
+    public static float getCurrentZoom() { return currentZoom; }
+            }
