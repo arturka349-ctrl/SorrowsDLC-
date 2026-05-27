@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "sorrowsdlc",
+  "version": "1.0.0",
+  "name": "sorrowsDLC",
+  "description": "Нурсултан визуалс",
+  "authors": ["sorrows"],
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.sorrowsdlc.SorrowsClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.5",
+    "minecraft": "1.21.4"
+  }
+}
